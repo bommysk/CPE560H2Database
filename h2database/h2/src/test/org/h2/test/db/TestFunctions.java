@@ -551,15 +551,33 @@ public class TestFunctions extends TestBase implements AggregateFunction {
         rs = stat.executeQuery("CALL TANH(50)");
         assertTrue(rs.next());
         assertEquals(Math.tanh(50), rs.getDouble(1));
+
+        System.out.println("Testing SUB1");
+        rs = stat.executeQuery("CALL SUB1(50)");
+        assertTrue(rs.next());
+        assertEquals(49.0, rs.getDouble(1));
+
         conn.close();
     }
 
     private void testVarArgs() throws SQLException {
         Connection conn = getConnection("functions");
         Statement stat = conn.createStatement();
+        
+        stat.execute("CREATE TABLE TEST_DOUBLE(ID INT PRIMARY KEY, VALUE DOUBLE)");
+        stat.execute("INSERT INTO TEST_DOUBLE VALUES(0, 1.0)");
+        stat.execute("INSERT INTO TEST_DOUBLE VALUES(1, 5.0)");
+        
+        ResultSet rs = stat.executeQuery(
+                "SELECT BIT_XOR(VALUE) FROM TEST_DOUBLE");
+        rs.next();
+        System.out.println("BIT_XOR");
+        assertEquals(4.0, rs.getDouble(1));
+
+
         stat.execute("CREATE ALIAS mean FOR \"" +
                 getClass().getName() + ".mean\"");
-        ResultSet rs = stat.executeQuery(
+        rs = stat.executeQuery(
                 "select mean(), mean(10), mean(10, 20), mean(10, 20, 30)");
         rs.next();
         assertEquals(1.0, rs.getDouble(1));

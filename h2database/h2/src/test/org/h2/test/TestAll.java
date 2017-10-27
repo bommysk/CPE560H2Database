@@ -720,7 +720,7 @@ kill -9 `jps -l | grep "org.h2.test." | cut -d " " -f 1`
         beforeTest();
 
         // db
-        addTest(new TestScriptSimple());
+        /*addTest(new TestScriptSimple());
         addTest(new TestScript());
         addTest(new TestAlter());
         addTest(new TestAlterSchemaRename());
@@ -741,10 +741,10 @@ kill -9 `jps -l | grep "org.h2.test." | cut -d " " -f 1`
         addTest(new TestDuplicateKeyUpdate());
         addTest(new TestEncryptedDb());
         addTest(new TestExclusive());
-        addTest(new TestFullText());
+        addTest(new TestFullText());*/
         addTest(new TestFunctionOverload());
         addTest(new TestFunctions());
-        addTest(new TestInit());
+        /*addTest(new TestInit());
         addTest(new TestIndex());
         addTest(new TestIndexHints());
         addTest(new TestLargeBlob());
@@ -848,12 +848,12 @@ kill -9 `jps -l | grep "org.h2.test." | cut -d " " -f 1`
         addTest(new TestMultiThreaded());
         addTest(new TestOuterJoins());
         addTest(new TestNestedJoins());
-        addTest(new TestStringAggCompatibility());
+        addTest(new TestStringAggCompatibility());*/
 
         runAddedTests();
 
         // serial
-        addTest(new TestDateStorage());
+        /*addTest(new TestDateStorage());
         addTest(new TestDriver());
         addTest(new TestJavaObjectSerializer());
         addTest(new TestLocale());
@@ -864,7 +864,7 @@ kill -9 `jps -l | grep "org.h2.test." | cut -d " " -f 1`
         addTest(new TestRandomSQL());
         addTest(new TestQueryCache());
         addTest(new TestUrlJavaObjectSerializer());
-        addTest(new TestWeb());
+        addTest(new TestWeb());*/
 
         runAddedTests(1);
 
@@ -873,7 +873,7 @@ kill -9 `jps -l | grep "org.h2.test." | cut -d " " -f 1`
 
     private void testUnit() {
         // mv store
-        addTest(new TestCacheConcurrentLIRS());
+        /*addTest(new TestCacheConcurrentLIRS());
         addTest(new TestCacheLIRS());
         addTest(new TestCacheLongKeyLIRS());
         addTest(new TestConcurrentLinkedList());
@@ -960,7 +960,7 @@ kill -9 `jps -l | grep "org.h2.test." | cut -d " " -f 1`
         addTest(new TestTools());
         addTest(new TestSampleApps());
         addTest(new TestStringCache());
-        addTest(new TestValueMemory());
+        addTest(new TestValueMemory());*/
 
         runAddedTests(1);
 
