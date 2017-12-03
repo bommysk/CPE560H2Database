@@ -126,7 +126,6 @@ class AggregateDataDefault extends AggregateData {
             if (value == null) {
                 value = v.convertTo(dataType);
             } else {
-                System.out.println("REACHED");
                 value = ValueLong.get(value.getLong() ^ v.getLong()).convertTo(dataType);
             }
             break;
@@ -202,6 +201,7 @@ class AggregateDataDefault extends AggregateData {
         return a;
     }
 
+    // iterator here
     private void groupDistinct(Database database, int dataType) {
         if (distinctValues == null) {
             return;

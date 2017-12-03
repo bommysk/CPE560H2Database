@@ -583,6 +583,9 @@ public class Aggregate extends Expression {
         if (distinct) {
             return text + "(DISTINCT " + on.getSQL() + ")";
         }
+
+        System.out.println("SQL: " + text + StringUtils.enclose(on.getSQL()));
+
         return text + StringUtils.enclose(on.getSQL());
     }
 

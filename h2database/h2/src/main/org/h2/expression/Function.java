@@ -71,6 +71,8 @@ import org.h2.value.ValueTime;
 import org.h2.value.ValueTimestamp;
 import org.h2.value.ValueUuid;
 
+import java.lang.reflect.Method;
+
 /**
  * This class implements most built-in functions of this database.
  */
@@ -96,7 +98,7 @@ public class Function extends Expression implements FunctionCall {
             XMLATTR = 83, XMLNODE = 84, XMLCOMMENT = 85, XMLCDATA = 86,
             XMLSTARTDOC = 87, XMLTEXT = 88, REGEXP_REPLACE = 89, RPAD = 90,
             LPAD = 91, CONCAT_WS = 92, TO_CHAR = 93, TRANSLATE = 94, ORA_HASH = 95,
-            TO_DATE = 96, TO_TIMESTAMP = 97, ADD_MONTHS = 98;
+            TO_DATE = 96, TO_TIMESTAMP = 97, ADD_MONTHS = 98, FUNC = 99;
 
     public static final int CURDATE = 100, CURTIME = 101, DATE_ADD = 102,
             DATE_DIFF = 103, DAY_NAME = 104, DAY_OF_MONTH = 105,
@@ -228,6 +230,8 @@ public class Function extends Expression implements FunctionCall {
         addFunction("POWER", POWER, 2, Value.DOUBLE);
         addFunction("RADIANS", RADIANS, 1, Value.DOUBLE);
         addFunction("SUB1", SUB1, 1, Value.DOUBLE);
+        // 2 parameters
+        addFunction("FUNC", FUNC, VAR_ARGS, Value.DOUBLE);
         // RAND without argument: get the next value
         // RAND with one argument: seed the random generator
         addFunctionNotDeterministic("RAND", RAND, VAR_ARGS, Value.DOUBLE);
@@ -505,6 +509,11 @@ public class Function extends Expression implements FunctionCall {
         } else {
             args = new Expression[info.parameterCount];
         }
+    }
+
+    public Function() {
+        this.database = null;
+        this.info = null;
     }
 
     private static void addFunction(String name, int type, int parameterCount,
@@ -1392,6 +1401,9 @@ public class Function extends Expression implements FunctionCall {
                     database.getMode().treatEmptyStringsAsNull);
             break;
         }
+        case FUNC:
+            result = (Value)findAndApplyMethod(v0.getString(), v1);
+            break;
         case POSITION:
             result = ValueInt.get(locate(v0.getString(), v1.getString(), 0));
             break;
@@ -2244,6 +2256,7 @@ public class Function extends Expression implements FunctionCall {
         case INSTR:
         case SUBSTR:
         case SUBSTRING:
+        case FUNC:
         case LPAD:
         case RPAD:
             min = 2;
@@ -2820,5 +2833,49 @@ public class Function extends Expression implements FunctionCall {
     public boolean isBufferResultSetToLocalTemp() {
         return info.bufferResultSetToLocalTemp;
     }
+
+    public Object findAndApplyMethod(String methodName, Value v1) {
+        Method[] declaredMethods = Function.class.getDeclaredMethods();
+
+        try {
+            for (int idx = 0; idx < declaredMethods.length; idx++) {
+                if (declaredMethods[idx].getName().equals(methodName)) {
+                    Object returnValue = declaredMethods[idx].invoke(null, v1);
+
+                    return returnValue;
+                }
+            }
+        }
+        catch(Exception e) {
+            System.out.println("IllegalAccessException!");
+        }
+
+        return null;
+    }
+
+    /* Add Custom Function */
+
+    public static Value ADD1(Value v1) {
+        return ValueDouble.get(v1.getDouble() + 1.0);
+    }
+
+    public static Value ADD1000000(Value v1) {
+        return ValueDouble.get(v1.getDouble() + 1000000.0);
+    }
+
+    public static Value SUB1000000(Value v1) {
+        return ValueDouble.get(v1.getDouble() - 1000000.0);
+    }
+
+    public static Value SQUARE(Value v1) {
+        return ValueDouble.get(v1.getDouble() * v1.getDouble());
+    }
+
+    public static Value CUBE(Value v1) {
+        return ValueDouble.get(v1.getDouble() * v1.getDouble() * v1.getDouble());
+    }
+
+    /*************************/
+
 
 }
